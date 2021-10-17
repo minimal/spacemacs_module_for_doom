@@ -199,11 +199,12 @@
   "Rt" 'transpose-regions
   "Ry" 'yank-rectangle)
 ;; applications ---------------------------------------------------------------
-(spacemacs/set-leader-keys
-  "ac"  'calc-dispatch
-  "ap"  'list-processes
-  "aP"  'proced
-  "au"  'undo-tree-visualize)
+;; (spacemacs/set-leader-keys
+
+;;   "ac"  'calc-dispatch
+;;   "ap"  'list-processes
+;;   "aP"  'proced
+;;   "au"  'undo-tree-visualize)
 ;; buffers --------------------------------------------------------------------
 (spacemacs/set-leader-keys
   "TAB"   'spacemacs/alternate-buffer

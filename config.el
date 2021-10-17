@@ -124,7 +124,7 @@ Spacemacs use spacemacs-.*-mode-map, we here use original mode map."
 ;; initialise layers
 
 ;; org layer
-(when (featurep! :lang org)
+(when nil ;;(featurep! :lang org)
   (load! (concat spacemacs-module-path "layer/org/config.el"))
   (load! (concat spacemacs-module-path "layer/org/funcs.el"))
   (load! (concat spacemacs-module-path "layer/org/packages.el"))
