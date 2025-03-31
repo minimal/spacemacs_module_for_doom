@@ -748,33 +748,32 @@ Informs users of error and prompts for default editing style for use during
 error recovery."
   (load (concat dotspacemacs-template-directory
                 ".spacemacs.template"))
-  (defadvice dotspacemacs/layers
-      (after error-recover-preserve-packages activate)
-    (progn
-      (setq-default dotspacemacs-install-packages 'used-but-keep-unused)
-      (ad-disable-advice 'dotspacemacs/layers 'after
-                         'error-recover-preserve-packages)
-      (ad-activate 'dotspacemacs/layers)))
-  (defadvice dotspacemacs/init
-      (after error-recover-prompt-for-style activate)
-    (progn
-      (setq-default dotspacemacs-editing-style
-                    (intern
-                     (ido-completing-read
-                      (format
-                       (concat
-                        "Spacemacs encountered an error while "
-                        "loading your `%s' file.\n"
-                        "Pick your editing style for recovery "
-                        "(use left and right arrows): ")
-                       dotspacemacs-filepath)
-                      '(("vim" vim)
-                        ("emacs" emacs)
-                        ("hybrid" hybrid))
-                      nil t nil nil 'vim)))
-      (ad-disable-advice 'dotspacemacs/init 'after
-                         'error-recover-prompt-for-style)
-      (ad-activate 'dotspacemacs/init))))
+  (advice-add 'dotspacemacs/layers
+              :after
+              (lambda (&rest _args)
+                (setq-default dotspacemacs-install-packages 'used-but-keep-unused)
+                (advice-remove 'dotspacemacs/layers 'error-recover-preserve-packages))
+              '((name . error-recover-preserve-packages)))
+
+  (advice-add 'dotspacemacs/init
+              :after
+              (lambda (&rest _args)
+                (setq-default dotspacemacs-editing-style
+                              (intern
+                               (ido-completing-read
+                                (format
+                                 (concat
+                                  "Spacemacs encountered an error while "
+                                  "loading your `%s' file.\n"
+                                  "Pick your editing style for recovery "
+                                  "(use left and right arrows): ")
+                                 dotspacemacs-filepath)
+                                '(("vim" vim)
+                                  ("emacs" emacs)
+                                  ("hybrid" hybrid))
+                                nil t nil nil 'vim)))
+                (advice-remove 'dotspacemacs/init 'error-recover-prompt-for-style))
+              '((name . error-recover-prompt-for-style))))
 
 (defun dotspacemacs//test-dotspacemacs/layers ()
   "Tests for `dotspacemacs/layers'"

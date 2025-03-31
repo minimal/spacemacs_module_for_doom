@@ -116,30 +116,32 @@
       (require 'evil-iedit-state) ;; for "e" key
       ;; add search capability to expand-region
       (when (featurep 'helm-ag)
-        (defadvice er/prepare-for-more-expansions-internal
-            (around helm-ag/prepare-for-more-expansions-internal activate)
-          ad-do-it
-          (let ((new-msg (concat (car ad-return-value)
-                                 ", / to search in project, "
-                                 "f to search in files, "
-                                 "b to search in opened buffers"))
-                (new-bindings (cdr ad-return-value)))
-            (cl-pushnew
-             '("/" (lambda ()
-                     (call-interactively
-                      'spacemacs/helm-project-smart-do-search-region-or-symbol)))
-             new-bindings)
-            (cl-pushnew
-             '("f" (lambda ()
-                     (call-interactively
-                      'spacemacs/helm-files-smart-do-search-region-or-symbol)))
-             new-bindings)
-            (cl-pushnew
-             '("b" (lambda ()
-                     (call-interactively
-                      'spacemacs/helm-buffers-smart-do-search-region-or-symbol)))
-             new-bindings)
-            (setq ad-return-value (cons new-msg new-bindings)))))
+        (advice-add 'er/prepare-for-more-expansions-internal
+            :around
+            (lambda (orig-fun &rest args)
+              (let* ((result (apply orig-fun args))
+                     (new-msg (concat (car result)
+                                      ", / to search in project, "
+                                      "f to search in files, "
+                                      "b to search in opened buffers"))
+                     (new-bindings (cdr result)))
+                (cl-pushnew
+                 '("/" (lambda ()
+                         (call-interactively
+                          'spacemacs/helm-project-smart-do-search-region-or-symbol)))
+                 new-bindings)
+                (cl-pushnew
+                 '("f" (lambda ()
+                         (call-interactively
+                          'spacemacs/helm-files-smart-do-search-region-or-symbol)))
+                 new-bindings)
+                (cl-pushnew
+                 '("b" (lambda ()
+                         (call-interactively
+                          'spacemacs/helm-buffers-smart-do-search-region-or-symbol)))
+                 new-bindings)
+                (cons new-msg new-bindings)))
+            '((name . helm-ag/prepare-for-more-expansions-internal))))
       (setq expand-region-contract-fast-key "V"
             expand-region-reset-fast-key "r"))))
 

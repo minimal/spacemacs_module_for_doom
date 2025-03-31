@@ -201,14 +201,16 @@
     (progn
       ;; fixed a weird issue where toggling display does not
       ;; swtich to text mode
-      (defadvice doc-view-toggle-display
-          (around spacemacs/doc-view-toggle-display activate)
-        (if (eq major-mode 'doc-view-mode)
-            (progn
-              ad-do-it
-              (text-mode)
-              (doc-view-minor-mode))
-          ad-do-it)))))
+      (advice-add 'doc-view-toggle-display
+                  :around
+                  (lambda (orig-fun &rest args)
+                    (if (eq major-mode 'doc-view-mode)
+                        (progn
+                          (apply orig-fun args)
+                          (text-mode)
+                          (doc-view-minor-mode))
+                      (apply orig-fun args)))
+                  '((name . spacemacs/doc-view-toggle-display))))))
 
 (defun spacemacs-navigation/init-golden-ratio ()
   (use-package golden-ratio

@@ -223,8 +223,12 @@
     :config
     (progn
       ;; (spacemacs|hide-lighter persp-mode)
-      (defadvice persp-activate (before spacemacs//save-toggle-layout activate)
-        (setq spacemacs--last-selected-layout persp-last-persp-name))
+      (advice-add 'persp-activate
+                  :before
+                  (lambda (&rest _args)
+                    (setq spacemacs--last-selected-layout persp-last-persp-name))
+                  '((name . spacemacs//save-toggle-layout)))
+
       (add-hook 'persp-mode-hook 'spacemacs//layout-autosave)
       (advice-add 'persp-load-state-from-file
                   :before 'spacemacs//layout-wait-for-modeline)
