@@ -253,8 +253,8 @@ Spacemacs use spacemacs-.*-mode-map, we here use original mode map."
 (load! (concat spacemacs-module-path "layer/spacemacs-layouts/packages.el"))
 (load! (concat spacemacs-module-path "layer/spacemacs-layouts/funcs.el"))
 (load! (concat spacemacs-module-path "layer/spacemacs-layouts/config.el"))
-(spacemacs-layouts/init-eyebrowse)
 (when (modulep! :ui workspaces)
+  (spacemacs-layouts/init-eyebrowse)
   (spacemacs-layouts/init-persp-mode))
 
 
